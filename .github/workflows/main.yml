@@ -1,14 +1,10 @@
 name: Node.js
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [push]
+
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
 
@@ -35,14 +31,25 @@ jobs:
           --health-retries 5
    
     steps:
-
+    - uses: actions/checkout@v2
+    - name: pwd
+      run: |
+        pwd
+        /usr/bin/ls -a
+        cd db
+        pwd
+    - name: Chmod
+      run: chmod +x ./install_db_shelter.sh
+      working-directory: /home/runner/work/bmstu_teamdev_shelter/bmstu_teamdev_shelter/db/
+      shell: bash
     - name: Install DB
       run: ./install_db_shelter.sh
       working-directory: /home/runner/work/bmstu_teamdev_shelter/bmstu_teamdev_shelter/db/
+      shell: bash
     - name: Test1
       run: sudo apt update
     - name: Test2
       run: sudo apt install postgresql postgresql-contrib
     - name: Test3
-      run: psql "sslmode=disable user=postgres hostaddr=127.0.0.1 port=5432 password=1234 dbname=shelter_db" -c "SELECT con.* FROM pg_catalog.pg_constraint con INNER JOIN pg_catalog.pg_class rel ON rel.oid = con.conrelid INNER JOIN pg_catalog.pg_namespace nsp  ON nsp.oid = connamespace;"
+      run: psql "sslmode=disable user=postgres hostaddr=127.0.0.1 port=5432 password=1234 dbname=shelter_db" -c "SELECT * FROM shelter_db.public.animal;"
     
